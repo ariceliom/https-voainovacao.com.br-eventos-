@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FAFAFA;
+        }
+
+        .main-section {
+            display: flex;
+            flex-direction: column;
+            margin: 20px ;
+        }
+
+        .filter-section {
+            background-color: #FFFFFF;
+            margin: 5px;
+            padding: 30px;
+            border-radius: 12px;
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-header h4 {
+            margin: 0;
+            font-weight: bold;
+        }
+
+        #clear-filters {
+            display: flex;
+            align-items: center;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: #42124c;
+            font-size: 16px;
+        }
+
+        #clear-filters i {
+            margin-right: 3px;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            margin-top: 10px;
+        }
+
+        .filter-options div {
+            display: flex;
+            align-items: center;
+            /* Centraliza verticalmente */
+            justify-content: space-between;
+            /* Espaça os elementos */
+            margin-bottom: 10px;
+            /* Espaçamento entre os itens */
+        }
+
+        .filter-options label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* Centraliza verticalmente */
+            margin-bottom: 10px;
+            /* Espaçamento entre os itens */
+            width: 100%;
+            /* Garante que o label ocupe 100% da largura disponível */
+        }
+
+        .filter-options input {
+            margin-left: auto;
+            /* Empurra o checkbox para a direita */
+        }
+
+        .filter-section label {
+            margin-right: 10px;
+        }
+
+        .filter-search {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 1px solid #000;
+            border-radius: 25px;
+            font-size: 14px;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            background: none !important;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #000;
+        }
+
+        .card-section {
+            margin: 5px;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* card */
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            width: 100% !important;
+            max-height: 235px;
+            /* Define uma altura máxima para os cartões */
+            height: auto !important;
+            /* Garante que a altura seja automática */
+            transition: opacity 0.3s, height 0.3s, margin-bottom 0.3s;
+            /* Adiciona transição suave para opacidade e altura */
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                flex-direction: column;
+                /* Certifica que os cartões fiquem em coluna em telas menores */
+                max-height: none;
+                /* Remove a altura máxima para flexibilidade */
+                height: auto;
+                /* Garante altura automática */
+                margin-bottom: 20px;
+                /* Ajusta a margem para mais espaçamento */
+            }
+
+            .card-image {
+                width: 100%;
+                /* A imagem ocupa toda a largura */
+                height: auto;
+                /* Garante que a altura seja ajustada conforme necessário */
+            }
+
+            .card-content {
+                width: 100%;
+                /* O conteúdo ocupa toda a largura */
+                padding: 10px;
+                /* Ajusta o padding para melhor visualização em telas menores */
+            }
+
+            .card-tags,
+            .card-info,
+            .card p,
+            .card button {
+                margin: 5px 0;
+                /* Ajusta margens para espaçamento adequado em telas menores */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                flex-direction: column;
+                /* Certifica que os cartões fiquem em coluna em telas menores */
+                max-height: none;
+                /* Remove a altura máxima para flexibilidade */
+                height: auto;
+                /* Garante altura automática */
+                margin-bottom: 20px;
+                /* Ajusta a margem para mais espaçamento */
+            }
+
+            .card-image {
+                width: 100%;
+                /* A imagem ocupa toda a largura */
+                height: auto;
+                /* Garante que a altura seja ajustada conforme necessário */
+            }
+
+            .card-content {
+                width: 100%;
+                /* O conteúdo ocupa toda a largura */
+                padding: 10px;
+                /* Ajusta o padding para melhor visualização em telas menores */
+            }
+
+            .card-tags,
+            .card-info,
+            .card p,
+            .card button {
+                margin: 5px 0;
+                /* Ajusta margens para espaçamento adequado em telas menores */
+            }
+        }
+
+        .card.hidden {
+            opacity: 0;
+            /* Torna o cartão invisível */
+            height: 0;
+            /* Define a altura para 0 */
+            padding: 0;
+            /* Remove o preenchimento para cartões invisíveis */
+            margin-bottom: 0;
+            /* Remove a margem inferior */
+        }
+
+        .card-image {
+            width: 100%;
+            /* Padrão para dispositivos menores */
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        /* Adiciona layout lado a lado para telas maiores */
+        @media (min-width: 768px) {
+            .card {
+                flex-direction: row;
+                /* Altera para linha */
+            }
+
+            .card-image {
+                width: 30%;
+                /* Ajusta a largura da imagem */
+            }
+
+            .card-content {
+                width: 70%;
+                /* Ajusta a largura do conteúdo */
+            }
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .card-tags span {
+            border: 1px solid #42124c;
+            margin: 5px;
+            padding: 8px;
+            border-radius: 9px;
+            color: #000;
+            background-color: #f5f5f5;
+        }
+
+        .card h1 {
+            margin-bottom: 10px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .card-info {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .card-info i {
+            margin-right: 3px;
+            color: #42124c;
+        }
+
+        .card p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        .button-link {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #3E1148;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button-link:hover {
+            color: #fff;
+            background-color: #2c0e36;
+        }
+
+
+        /*.card button {
+            padding: 10px 15px;
+            background-color: #3E1148;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .card button:hover {
+            background-color: #2c0e36;
+        }*/
+
+        /* Estilos responsivos para a seção principal e de filtros em telas maiores */
+        @media (min-width: 768px) {
+            .main-section {
+                flex-direction: row;
+            }
+
+            .filter-section {
+                width: 30%;
+                margin-right: 20px;
+                border-radius: 12px;
+            }
+
+            .card-section {
+                width: 70%;
+                display: flex;
+                flex-direction: row;
+                margin-top: 0;
+            }
+        }
+    </style>
+    <!-- Link para Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <section class="main-section">
+        <div class="filter-section">
+            <div class="filter-header">
+                <h4>Filtrar por:</h4>
+                <button id="clear-filters">
+                    <i class="fas fa-trash-alt"></i>
+                    <span>LIMPAR</span>
+                </button>
+            </div>
+
+            <div class="filter-search">
+                <input type="text" id="search-input" placeholder="Pesquise aqui um evento">
+                <button id="search-button" class="search-icon">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <div class="filter-options">
+                <div>
+                    <h4>
+                        O que você busca?
+                    </h4>
+                </div>
+                <div>
+                    <label for="hackathon">Hackathon</label>
+                    <input type="checkbox" id="hackathon" name="hackathon" class="filter" data-filter="hackathon"><br>
+                </div>
+                <div>
+                    <label for="Bootcamp">Bootcamp</label>
+                    <input type="checkbox" id="bootcamp" name="bootcamp" class="filter" data-filter="bootcamp"><br>
+                </div>
+                <div>
+                    <label for="empreendedorismo">Empreendedorismo</label>
+                    <input type="checkbox" id="empreendedorismo" name="empreendedorismo" class="filter"
+                        data-filter="empreendedorismo"><br>
+                </div>
+                <div>
+                    <label for="inovacao">Inovação</label>
+                    <input type="checkbox" id="inovacao" name="inovacao" class="filter" data-filter="Inovação"><br>
+                </div>
+                <div>
+                    <label for="gestao">Gestão</label>
+                    <input type="checkbox" id="gestao" name="gestao" class="filter" data-filter="gestao"><br>
+                </div>
+                <div>
+                    <label for="lideranca">Liderança</label>
+                    <input type="checkbox" id="lideranca" name="lideranca" class="filter" data-filter="lideranca"><br>
+                </div>
+                <div>
+                    <label for="tecnologia">Tecnologia</label>
+                    <input type="checkbox" id="tecnologia" name="tecnologia" class="filter"
+                        data-filter="tecnologia"><br>
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="card-section">
+            
+            <!--Card - Hackathon do CREA-PB 2025-->
+            <div class="card hackathon tecnologia">
+                <div class="card-image">
+                    <img src="http://voainovacao.com.br/wp-content/uploads/2025/04/Captura-de-tela-2025-04-27-125749.png" alt="Desafio WhatsApp pela Amazônia">
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span>Hackathon</span>
+                        <span>Tecnologia</span>
+                    </div>
+                    <h1>Hackathon do CREA-PB 2025</h1>
+                    <div class="card-info">
+                        <i class="fas fa-calendar-alt"></i><span>30/Mai/25 a 01/Jun/2025</span>
+                        <i class="fas fa-map-marker-alt"></i><span>Presencial</span>
+                    </div>
+                    <a href="http://voainovacao.com.br/hackathon-crea-pb" target="_blank" class="button-link">
+                        SOBRE O EVENTO
+                    </a>
+                </div>
+            </div>
+            
+            <!--Card - Hackathon Agro 4.0-->
+            <div class="card hackathon tecnologia">
+                <div class="card-image">
+                    <img src="http://voainovacao.com.br/wp-content/uploads/2025/04/agro.jpg" alt="Desafio WhatsApp pela Amazônia">
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span>Hackathon</span>
+                        <span>Tecnologia</span>
+                    </div>
+                    <h1>Hackathon Agro 4.0</h1>
+                    <div class="card-info">
+                        <i class="fas fa-calendar-alt"></i><span>23/Mai/25 e 24/Mai/2025</span>
+                        <i class="fas fa-map-marker-alt"></i><span>Presencial</span>
+                    </div>
+                    <a href="http://voainovacao.com.br/hackathonagro4-0/" target="_blank" class="button-link">
+                        SOBRE O EVENTO
+                    </a>
+                </div>
+            </div>
+            
+            <!--Card - HACKATHON AGROTECH TAUÁ 2024-->
+            <div class="card hackathon inovacao">
+                <div class="card-image">
+                    <img src="http://voainovacao.com.br/wp-content/uploads/2024/11/Captura-de-tela-2024-11-26-210440.png" alt="Desafio WhatsApp pela Amazônia">
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span>Hackathon</span>
+                        <span>Inovacao</span>
+                        <span>Empreendedorismo</span>
+                    </div>
+                    <h1>Desafio WhatsApp pela Amazônia</h1>
+                    <div class="card-info">
+                        <i class="fas fa-calendar-alt"></i><span>16/Dez/24 a Fev/2025</span>
+                        <i class="fas fa-map-marker-alt"></i><span>Online</span>
+                    </div>
+                    <a href="https://www.desafiopelaamazonia.com.br/" target="_blank" class="button-link">
+                        SOBRE O EVENTO
+                    </a>
+                </div>
+            </div>
+            
+            <!--Card - IDEATHON CREA-SP 3ª EDIÇÃO-->
+            <div class="card hackathon inovacao">
+                <div class="card-image">
+                    <img src="http://voainovacao.com.br/wp-content/uploads/2024/11/1-banner-mobile.png" alt="IDEATHON CREA-SP">
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span>Hackathon</span>
+                        <span>Inovacao</span>
+                    </div>
+                    <h1>IDEATHON CREA-SP</h1>
+                    <div class="card-info">
+                        <i class="fas fa-calendar-alt"></i><span>28/11 a 07/12/2024</span>
+                        <i class="fas fa-map-marker-alt"></i><span>Online</span>
+                    </div>
+                    <a href="https://crealab.com.br/ideathon-desafio/" target="_blank" class="button-link">
+                        SOBRE O EVENTO
+                    </a>
+                </div>
+            </div>
+            
+            
+            <!--Card - HACKATHON AGROTECH TAUÁ 2024-->
+            <div class="card hackathon inovacao">
+                <div class="card-image">
+                    <img src="http://voainovacao.com.br/wp-content/uploads/2024/11/logo.jpg" alt="HACKATHON AGROTECH TAUÁ 2024">
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span>Hackathon</span>
+                        <span>Inovacao</span>
+                    </div>
+                    <h1>HACKATHON AGROTECH TAUÁ 2024</h1>
+                    <div class="card-info">
+                        <i class="fas fa-calendar-alt"></i><span>10 a 20/11/24</span>
+                        <i class="fas fa-map-marker-alt"></i><span>Online/Presencial</span>
+                    </div>
+                    <a href="https://festberro2024.taua.ce.gov.br/" target="_blank" class="button-link">
+                        SOBRE O EVENTO
+                    </a>
+                </div>
+            </div>
+            
+            <!--Card - Bootcamp Impacta + Ceará-->
+            <div class="card hackathon inovacao">
+                <div class="card-image">
+                    <img src="http://voainovacao.com.br/wp-content/uploads/2024/11/botcamp.png" alt="Hackathon Crea-MA">
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span>Bootcamp</span>
+                        <span>Inovação</span>
+                    </div>
+                    <h1>Bootcamp Impacta + Ceará</h1>
+                    <div class="card-info">
+                        <i class="fas fa-calendar-alt"></i><span>27 e 28/09/24</span>
+                        <i class="fas fa-map-marker-alt"></i><span>Online</span>
+                    </div>
+                    <a href="http://voainovacao.com.br/bootcamp-impacta-mais-ceara/" target="_blank" class="button-link">
+                        SOBRE O EVENTO
+                    </a>
+                </div>
+            </div>
+            
+            <!--Card - Hackathon Crea-MA-->
+            <div class="card tecnologia inovacao hackathon">
+                <div class="card-image">
+                    <img src="http://voainovacao.com.br/wp-content/uploads/2024/11/Captura-de-tela-2024-11-05-223502.png" alt="Hackathon Crea-MA">
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span>Hackathon</span>
+                        <span>Tecnologia</span>
+                        <span>Inovação</span>
+                    </div>
+                    <h1>Hackathon CREA-MA</h1>
+                    <div class="card-info">
+                        <i class="fas fa-calendar-alt"></i><span>30/08 a 01/09/24</span>
+                        <i class="fas fa-map-marker-alt"></i><span>Presencial</span>
+                    </div>
+                    <a href="http://voainovacao.com.br/hackathon-crea-ma/" target="_blank" class="button-link">
+                        SOBRE O EVENTO
+                    </a>
+                </div>
+            </div>
+            
+            <!--Card - Confea Open Day-->
+            <div class="card hackathon tecnologia inovacao">
+                <div class="card-image">
+                    <img src="http://voainovacao.com.br/wp-content/uploads/2024/11/Captura-de-tela-2024-11-05-221555.jpg" alt="Hackathon Crea-CE">
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span>Hackathon</span>
+                        <span>Tecnologia</span>
+                        <span>Inovação</span>
+                    </div>
+                    <h1>Confea Open Day</h1>
+                    <div class="card-info">
+                        <i class="fas fa-calendar-alt"></i><span>20/07 a 15/08/24</span>
+                        <i class="fas fa-map-marker-alt"></i><span>Online/Presencial</span>
+                    </div>
+                    <a href="http://voainovacao.com.br/confea-open-day/" target="_blank" class="button-link">
+                        SOBRE O EVENTO
+                    </a>
+                </div>
+            </div>
+            
+            <!--Card - Hackathon Crea-SP 1ª Edição-->
+            <div class="card hackathon empreendedorismo inovacao">
+                <div class="card-image">
+                    <img src="http://voainovacao.com.br/wp-content/uploads/2024/06/0747A8E1-2AF4-4B0D-9620-74470994DB36-1.jpg" alt="1° HACKATHON DO CREA-PB">
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span>Hackathon</span>
+                        <span>Tecnologia</span>
+                        <span>Empreendedorismo</span>
+                    </div>
+                    <h1>1° HACKATHON DO CREA-PB</h1>
+                    <div class="card-info">
+                        <i class="fas fa-calendar-alt"></i><span>17 a 19/05 de 2024</span>
+                        <i class="fas fa-map-marker-alt"></i><span>Presencial</span>
+                    </div>
+                    <a href="http://voainovacao.com.br/crea-pb/" target="_blank" class="button-link">
+                        SOBRE O EVENTO
+                    </a>
+                </div>
+            </div>
+            
+            <!--Card - Hackathon Jornada da Caatinga+-->
+            <div class="card hackathon tecnologia inovacao">
+                <div class="card-image">
+                    <img src="http://voainovacao.com.br/wp-content/uploads/2024/11/1-1-1024x576-1.jpg" alt="Hackathon Crea-SP 2ª edição">
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span>Hackathon</span>
+                        <span>Tecnologia</span>
+                        <span>Inovação</span>
+                    </div>
+                    <h1>Hackathon Jornada da Caatinga+</h1>
+                    <div class="card-info">
+                        <i class="fas fa-calendar-alt"></i><span>23 a 27/04/24</span>
+                        <i class="fas fa-map-marker-alt"></i><span>Online/Presencial</span>
+                    </div>
+                    <a href="https://challengeexperience.com.br/jornada-da-caatinga/" target="_blank" class="button-link">
+                        SOBRE O EVENTO
+                    </a>
+                </div>
+            </div>
+            
+            <!--Card - Hackathon Crea-SP 2ª Edição-->
+            <div class="card hackathon tecnologia inovacao">
+                <div class="card-image">
+                    <img src="http://voainovacao.com.br/wp-content/uploads/2024/06/IMG_6663-160-768x520.jpg" alt="Crea-SP 2ª Edição">
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span>Hackathon</span>
+                        <span>Tecnologia</span>
+                        <span>Inovação</span>
+                    </div>
+                    <h1>CREA-SP 2ª Edição</h1>
+                    <div class="card-info">
+                        <i class="fas fa-calendar-alt"></i><span>07 a 09 de dezembro de 2023</span>
+                        <i class="fas fa-map-marker-alt"></i><span>Presencial</span>
+                    </div>
+                    <a href="http://voainovacao.com.br/crea-sp-2a-edicao/" target="_blank" class="button-link">
+                        SOBRE O EVENTO
+                    </a>
+                </div>
+            </div>
+            
+            <!--Card - Hackathon Crea-SP 1ª Edição-->
+            <div class="card hackathon tecnologia inovacao">
+                <div class="card-image">
+                    <img src="http://voainovacao.com.br/wp-content/uploads/2024/06/IMG_0360-2-scaled.jpg" alt="Crea-SP 1ª Edição">
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span>Hackathon</span>
+                        <span>Tecnologia</span>
+                        <span>Inovação</span>
+                    </div>
+                    <h1>CREA-SP 1ª Edição</h1>
+                    <div class="card-info">
+                        <i class="fas fa-calendar-alt"></i><span>26/07 a 05/08/2023</span>
+                        <i class="fas fa-map-marker-alt"></i><span>Online/Presencial</span>
+                    </div>
+                    <a href="http://voainovacao.com.br/hackathon-crea-sp-1a-edicao/" target="_blank" class="button-link">
+                        SOBRE O EVENTO
+                    </a>
+                </div>
+            </div>
+            
+            <!--Card - Hackathon Crea-CE-->
+            <div class="card hackathon tecnologia inovacao">
+                <div class="card-image">
+                    <img src="http://voainovacao.com.br/wp-content/uploads/2024/06/DSC_0686-3-scaled.jpg" alt="1° HACKATHON DO CREA-CE">
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span>Hackathon</span>
+                        <span>Tecnologia</span>
+                        <span>Inovação</span>
+                    </div>
+                    <h1>1° HACKATHON DO CREA-CE</h1>
+                    <div class="card-info">
+                        <i class="fas fa-calendar-alt"></i><span>05 a 07/05/2023</span>
+                        <i class="fas fa-map-marker-alt"></i><span>Presencial</span>
+                    </div>
+                    <a href="http://voainovacao.com.br/crea-ce/" target="_blank" class="button-link">
+                        SOBRE O EVENTO
+                    </a>
+                </div>
+            </div>
+            
+            
+        </div>
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const searchButton = document.getElementById('search-button');
+    const searchInput = document.getElementById('search-input');
+    const clearFiltersButton = document.getElementById('clear-filters');
+    const filters = Array.from(document.querySelectorAll('.filter')); // Seleciona todos os checkboxes
+    const cards = Array.from(document.querySelectorAll('.card')); // Converte NodeList em Array
+    const cardSection = document.querySelector('.card-section');
+
+    // Função para realizar a busca por texto
+    function searchEvents() {
+        const query = searchInput.value.toLowerCase();
+        let hasResults = false;
+        const visibleCards = [];
+
+        cards.forEach(card => {
+            const title = card.querySelector('h1').textContent.toLowerCase();
+            if (title.includes(query)) {
+                card.style.display = 'flex';
+                visibleCards.push(card);
+                hasResults = true;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Remove todos os cartões da seção
+        cardSection.innerHTML = '';
+
+        // Adiciona os cartões visíveis ao topo da seção
+        visibleCards.forEach(card => cardSection.appendChild(card));
+
+        // Exibe mensagem se nenhum cartão correspondente for encontrado
+        if (!hasResults) {
+            const noResultsMessage = document.createElement('p');
+            noResultsMessage.className = 'no-results';
+            noResultsMessage.textContent = 'A busca não encontrou eventos com a seleção atual.';
+            cardSection.appendChild(noResultsMessage);
+        } else {
+            const noResultsMessage = document.querySelector('.no-results');
+            if (noResultsMessage) {
+                noResultsMessage.remove();
+            }
+        }
+    }
+
+    // Função para realizar a busca por filtros
+    function filterEvents() {
+        const activeFilters = filters.filter(f => f.checked).map(f => f.getAttribute('data-filter').toLowerCase());
+        let hasResults = false;
+        const visibleCards = [];
+
+        if (activeFilters.length === 0) {
+            // Se não houver filtros ativos, exibe todos os cartões
+            cards.forEach(card => {
+                card.style.display = 'flex';
+                visibleCards.push(card);
+                hasResults = true;
+            });
+        } else {
+            // Se houver filtros ativos, aplica a filtragem
+            cards.forEach(card => {
+                const cardTags = Array.from(card.querySelectorAll('.card-tags span')).map(tag => tag.textContent.toLowerCase());
+                if (activeFilters.some(filter => cardTags.includes(filter))) {
+                    card.style.display = 'flex';
+                    visibleCards.push(card);
+                    hasResults = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Remove todos os cartões da seção
+        cardSection.innerHTML = '';
+
+        // Adiciona os cartões visíveis ao topo da seção
+        visibleCards.forEach(card => cardSection.appendChild(card));
+
+        // Exibe mensagem se nenhum cartão correspondente for encontrado
+        if (!hasResults) {
+            const noResultsMessage = document.createElement('p');
+            noResultsMessage.className = 'no-results';
+            noResultsMessage.textContent = 'A busca não encontrou eventos com a seleção atual.';
+            cardSection.appendChild(noResultsMessage);
+        } else {
+            const noResultsMessage = document.querySelector('.no-results');
+            if (noResultsMessage) {
+                noResultsMessage.remove();
+            }
+        }
+    }
+
+    // Adiciona eventos de clique e enter para buscar por texto
+    searchButton.addEventListener('click', searchEvents);
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchEvents();
+        }
+    });
+
+    // Adiciona evento de clique nos filtros (checkboxes)
+    filters.forEach(filter => filter.addEventListener('change', filterEvents));
+
+    // Função para limpar a busca e exibir todos os cartões
+    function clearSearch() {
+        searchInput.value = '';
+        filters.forEach(filter => filter.checked = false); // Desmarca todos os checkboxes
+        cards.forEach(card => {
+            card.style.display = 'flex';
+            cardSection.appendChild(card); // Move todos os cartões de volta para a seção
+        });
+        const noResultsMessage = document.querySelector('.no-results');
+        if (noResultsMessage) {
+            noResultsMessage.remove();
+        }
+    }
+
+    // Adiciona evento de clique ao botão de limpar filtros
+    clearFiltersButton.addEventListener('click', clearSearch);
+});
+
+    </script>
+    
+</body>
